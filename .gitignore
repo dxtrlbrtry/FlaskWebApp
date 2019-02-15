@@ -1,0 +1,4 @@
+/__pycache__
+*.pyc
+startup.bat
+site.db
