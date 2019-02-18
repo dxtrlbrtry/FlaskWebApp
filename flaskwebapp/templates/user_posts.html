@@ -1,6 +1,15 @@
 {% extends 'layout.html' %}
 {% block content %}
 <h1 class="mb-3">Posts by: {{ user.username }} ({{ posts.total }})</h1>
+{% if user != current_user %}
+    {% if user in current_user.friends %}
+        <a href="{{ url_for('users.remove_friend', username=user.username) }}">Remove Friend</a>
+    {% elif current_user in user.requests %}
+        <p>Friend request sent..</p>
+    {% else %}
+        <a href="{{ url_for('users.send_request', username=user.username) }}">Add Friend</a>
+    {% endif %}
+{% endif %}
 {% for post in posts.items %}
 <article class="media content-section">
     <img class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pics/' + post.author.image_file) }}">

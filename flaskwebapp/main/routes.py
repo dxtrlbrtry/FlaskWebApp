@@ -1,5 +1,6 @@
 from flask import Blueprint, request, render_template
-from flaskwebapp.models import Post
+from flaskwebapp import db
+from flaskwebapp.models import Post, User
 
 main = Blueprint('main', __name__)
 

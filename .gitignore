@@ -2,4 +2,4 @@
 /.idea
 *.pyc
 startup.bat
-site.db
+flaskwebapp/site.db
