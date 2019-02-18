@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, url_for, flash, redirect, request
+from flask import Blueprint, render_template, url_for, flash, redirect, request, abort
 from flask_login import login_user, current_user, logout_user, login_required
 from flaskwebapp import db, bcrypt
 from flaskwebapp.models import User, Post
@@ -124,6 +124,8 @@ def remove_friend(username):
 @login_required
 def send_request(username):
     user = User.query.filter_by(username=username).first_or_404()
+    if user == current_user:
+        abort(403)
     if current_user in user.requests:
         flash(f'Friend request already sent but is still pending', 'warning')
         return redirect(url_for('users.user_posts', username=user.username))
