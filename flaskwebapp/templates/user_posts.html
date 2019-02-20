@@ -1,7 +1,7 @@
 {% extends 'layout.html' %}
 {% block content %}
 <h1 class="mb-3">Posts by: {{ user.username }} ({{ posts.total }})</h1>
-{% if user != current_user %}
+{% if user != current_user and current_user.is_authenticated %}
     {% if user in current_user.friends %}
         <a href="{{ url_for('users.remove_friend', username=user.username) }}">Remove Friend</a>
     {% elif current_user in user.requests %}

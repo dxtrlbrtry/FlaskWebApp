@@ -25,6 +25,7 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String(120), unique=True, nullable=False)
     image_file = db.Column(db.String(20), nullable=False, default='default.jpg')
     password = db.Column(db.String(60), nullable=False)
+    access = db.Column(db.String(10), nullable=False, default='user')
     posts = db.relationship('Post', backref='author', lazy=True)
     requests = db.relationship('User',
                                secondary=friend_requests,
@@ -70,6 +71,7 @@ class Post(db.Model):
 class Sala(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(20), nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)
     address = db.Column(db.String(100), nullable=False)
     schedule = db.Column(db.String(250), nullable=False)
 

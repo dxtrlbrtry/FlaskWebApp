@@ -1,9 +1,11 @@
 import os
 import secrets
 from PIL import Image
-from flask import url_for, current_app
+from flask import url_for, current_app, request, redirect, abort, flash
+from flask_login import current_user
 from flask_mail import Message
 from flaskwebapp import mail
+from functools import wraps
 
 
 def save_picture(form_picture):
@@ -29,3 +31,17 @@ To reset your password, visit the following link:
 If you did not make this request, ignore this message
 '''
     mail.send(msg)
+
+
+def requires_access(access_level):
+    def decorator(f):
+        @wraps(f)
+        def decorated_function(*args, **kwargs):
+            if not current_user.is_authenticated:
+                flash('Please login to access that page', 'info')
+                return redirect(url_for('users.login'))
+            if current_user.access != access_level:
+                abort(403)
+            return f(*args, **kwargs)
+        return decorated_function
+    return decorator

@@ -95,7 +95,7 @@ def reset_token(token):
     return render_template('reset_token.html', title='Reset Password', form=form)
 
 
-@users.route('/user/<string:username>/', methods=['GET', 'POST', 'DELETE'])
+@users.route('/user/<string:username>/', methods=['GET'])
 def user_posts(username):
     if request.method == 'GET':
         page = request.args.get('page', default=1, type=int)
@@ -106,7 +106,7 @@ def user_posts(username):
         return render_template('user_posts.html', posts=posts, user=user)
 
 
-@users.route('/remove_friend/<string:username>', methods=['GET'])
+@users.route('/user/<string:username>/remove/', methods=['GET'])
 @login_required
 def remove_friend(username):
     user = User.query.filter_by(username=username).first_or_404()
@@ -120,7 +120,7 @@ def remove_friend(username):
     return redirect(url_for('users.user_posts', username=username))
 
 
-@users.route('/send_request/<string:username>', methods=['GET'])
+@users.route('/user/<string:username>/send/', methods=['GET'])
 @login_required
 def send_request(username):
     user = User.query.filter_by(username=username).first_or_404()
@@ -148,7 +148,7 @@ def requests():
     return render_template('requests.html', requests=current_user.requests)
 
 
-@users.route('/accept_request/<string:username>', methods=['GET'])
+@users.route('/requests/<string:username>/accept/', methods=['GET'])
 @login_required
 def accept_request(username):
     user = User.query.filter_by(username=username).first_or_404()
@@ -164,7 +164,7 @@ def accept_request(username):
     return redirect(url_for('users.requests', username=username))
 
 
-@users.route('/refuse_request/<string:username>', methods=['GET'])
+@users.route('/request/<string:username>/refuse', methods=['GET'])
 @login_required
 def refuse_request(username):
     user = User.query.filter_by(username=username).first_or_404()
