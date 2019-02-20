@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, url_for, flash, redirect, request
+from flask import Blueprint, render_template, url_for, flash, redirect, request, abort
 from flask_login import login_user, current_user, logout_user, login_required
 from flaskwebapp import db, bcrypt
 from flaskwebapp.models import User, Post
@@ -61,17 +61,7 @@ def account():
         form.username.data = current_user.username
         form.email.data = current_user.email
     image_file = url_for('static', filename='profile_pics/' + current_user.image_file)
-    return render_template('account.html', title='Account', image_file=image_file, form=form)
-
-
-@users.route('/user/<string:username>/')
-def user_posts(username):
-    page = request.args.get('page', default=1, type=int)
-    user = User.query.filter_by(username=username).first_or_404()
-    posts = Post.query.filter_by(author=user)\
-        .order_by(Post.date_posted.desc())\
-        .paginate(page=page, per_page=5)
-    return render_template('user_posts.html', posts=posts, user=user)
+    return render_template('account.html', title='Account', image_file=image_file, form=form, friends=current_user.friends)
 
 
 @users.route('/reset_password', methods=['GET', 'POST'])
@@ -103,3 +93,82 @@ def reset_token(token):
         flash(f'Your password has been updated. YOu are now able to log in', 'success')
         return redirect(url_for('users.login'))
     return render_template('reset_token.html', title='Reset Password', form=form)
+
+
+@users.route('/user/<string:username>/', methods=['GET'])
+def user_posts(username):
+    if request.method == 'GET':
+        page = request.args.get('page', default=1, type=int)
+        user = User.query.filter_by(username=username).first_or_404()
+        posts = Post.query.filter_by(author=user)\
+            .order_by(Post.date_posted.desc())\
+            .paginate(page=page, per_page=5)
+        return render_template('user_posts.html', posts=posts, user=user)
+
+
+@users.route('/user/<string:username>/remove/', methods=['GET'])
+@login_required
+def remove_friend(username):
+    user = User.query.filter_by(username=username).first_or_404()
+    if user not in current_user.friends:
+        flash('Cannot unfriend, you are not friends yet', 'warning')
+    else:
+        current_user.friends.remove(user)
+        user.friends.remove(current_user)
+        db.session.commit()
+        flash(f'You successfully unfriended ' + user.username + '.', 'success')
+    return redirect(url_for('users.user_posts', username=username))
+
+
+@users.route('/user/<string:username>/send/', methods=['GET'])
+@login_required
+def send_request(username):
+    user = User.query.filter_by(username=username).first_or_404()
+    if user == current_user:
+        abort(403)
+    if current_user in user.requests:
+        flash(f'Friend request already sent but is still pending', 'warning')
+        return redirect(url_for('users.user_posts', username=user.username))
+    if user in current_user.friends:
+        flash(f'User already in friendslist', 'warning')
+        return redirect(url_for('users.user_posts', username=user.username))
+    if user in current_user.requests:
+        flash(f'You already have a request from that user', 'warning')
+        return redirect(url_for('users.user_posts', username=user.username))
+    else:
+        user.requests.append(current_user)
+        db.session.commit()
+        flash(f'Friend request sent to ' + user.username + '.', 'success')
+    return redirect(url_for('users.user_posts', username=user.username))
+
+
+@users.route('/requests/', methods=['GET', 'POST'])
+@login_required
+def requests():
+    return render_template('requests.html', requests=current_user.requests)
+
+
+@users.route('/requests/<string:username>/accept/', methods=['GET'])
+@login_required
+def accept_request(username):
+    user = User.query.filter_by(username=username).first_or_404()
+    if user in current_user.friends:
+        current_user.requests.remove(user)
+        flash('You are already friends', 'warning')
+    else:
+        current_user.requests.remove(user)
+        current_user.friends.append(user)
+        user.friends.append(current_user)
+        db.session.commit()
+        flash(f'You added ' + user.username + ' to your friends list', 'success')
+    return redirect(url_for('users.requests', username=username))
+
+
+@users.route('/request/<string:username>/refuse', methods=['GET'])
+@login_required
+def refuse_request(username):
+    user = User.query.filter_by(username=username).first_or_404()
+    current_user.requests.remove(user)
+    db.session.commit()
+    flash(f'Friend request deleted', 'info')
+    return redirect(url_for('users.requests', username=username))

@@ -8,6 +8,17 @@
             <p class="text-secondary">{{ current_user.email }}</p>
         </div>
     </div>
+    <h2>Friends</h2>
+    <div class="row">
+        {% for friend in friends %}
+            {% if friend %}
+                <div class="media content-section mr-4">
+                    <img class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pics/' + friend.image_file) }}">
+                    <a href="{{ url_for('users.user_posts', username=friend.username) }}">{{ friend.username }}</a>
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
     <form method="POST" action="" enctype="multipart/form-data">
         {{ form.hidden_tag() }}
         <fieldset class="form-group">

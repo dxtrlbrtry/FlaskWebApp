@@ -1,0 +1,7 @@
+{% extends 'layout.html' %}
+{% block content %}
+<h2>Logged in as {{ current_user.username }}</h2>
+{% for user in users %}
+    <a href="{{ url_for('users.user_posts', username=user.username) }}">{{ user.username }}</a></br>
+{% endfor %}
+{% endblock content %}
