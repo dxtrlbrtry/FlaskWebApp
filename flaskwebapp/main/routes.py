@@ -18,8 +18,3 @@ def about():
     return render_template('about.html', title='About')
 
 
-@main.route('/control-panel/')
-@requires_access('admin')
-def control_panel():
-    users = User.query.all()
-    return render_template('control_panel.html', users=users)
