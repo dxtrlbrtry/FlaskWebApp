@@ -1,6 +1,6 @@
-from flask import Blueprint, request, render_template
-from flaskwebapp.users.utils import requires_access
-from flaskwebapp.models import Post, User
+from flask import Blueprint, request, render_template, redirect, url_for
+from flask_login import current_user
+from flaskwebapp.models import Post
 
 main = Blueprint('main', __name__)
 
@@ -8,9 +8,10 @@ main = Blueprint('main', __name__)
 @main.route('/')
 @main.route('/home/')
 def home():
-    page = request.args.get('page', default=1, type=int)
-    posts = Post.query.order_by(Post.date_posted.desc()).paginate(page=page, per_page=5)
-    return render_template('home.html', posts=posts)
+    if current_user.is_authenticated:
+        posts = Post.query.order_by(Post.date_posted.desc())
+        return render_template('home.html', posts=posts)
+    return redirect(url_for('users.login'))
 
 
 @main.route('/about/')

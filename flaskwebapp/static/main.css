@@ -12,6 +12,13 @@ h1, h2, h3, h4, h5, h6 {
     background: #dddddd
 }
 
+.right-panel {
+    position: fixed; /* Fixed Sidebar (stay in place on scroll) */
+    z-index: 1; /* Stay on top */
+    overflow-x: hidden; /* Disable horizontal scroll */
+    padding-top: 20px;
+}
+
 .bg-steel {
   background-color: #5f788a;
 }

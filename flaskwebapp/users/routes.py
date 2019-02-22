@@ -39,6 +39,7 @@ def login():
 
 
 @users.route('/logout/')
+@login_required
 def logout():
     logout_user()
     return redirect(url_for('main.home'))
@@ -96,14 +97,11 @@ def reset_token(token):
 
 
 @users.route('/user/<string:username>/', methods=['GET'])
+@login_required
 def user_posts(username):
-    if request.method == 'GET':
-        page = request.args.get('page', default=1, type=int)
-        user = User.query.filter_by(username=username).first_or_404()
-        posts = Post.query.filter_by(author=user)\
-            .order_by(Post.date_posted.desc())\
-            .paginate(page=page, per_page=5)
-        return render_template('user_posts.html', posts=posts, user=user)
+    user = User.query.filter_by(username=username).first_or_404()
+    posts = Post.query.filter_by(author=user).order_by(Post.date_posted.desc())
+    return render_template('user_posts.html', posts=posts, user=user)
 
 
 @users.route('/user/<string:username>/remove/', methods=['GET'])
