@@ -10,6 +10,11 @@ def load_user(user_id):
     return User.query.get(int(user_id))
 
 
+likes = db.Table('likes',
+                  db.Column('user_id', db.Integer, db.ForeignKey('user.id')),
+                  db.Column('post_id', db.Integer, db.ForeignKey('post.id')))
+
+
 friend = db.Table('friend',
                   db.Column('user_id', db.Integer, db.ForeignKey('user.id')),
                   db.Column('friend_id', db.Integer, db.ForeignKey('user.id')))
@@ -27,6 +32,8 @@ class User(db.Model, UserMixin):
     password = db.Column(db.String(60), nullable=False)
     access = db.Column(db.String(10), nullable=False, default='user')
     posts = db.relationship('Post', backref='author', lazy=True)
+    likes = db.relationship('Post', secondary=likes, backref='liked_by', lazy='dynamic')
+    comments = db.relationship('Comment', backref='author', lazy='dynamic')
     requests = db.relationship('User',
                                secondary=friend_requests,
                                primaryjoin=(friend_requests.c.user_id == id),
@@ -61,11 +68,21 @@ class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100), nullable=False)
     date_posted = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-    content = db.Column(db.Text, nullable=False)
+    content = db.Column(db.Text, nullable=True)
+    image_file = db.Column(db.String(20), nullable=True)
+    comments = db.relationship('Comment', backref='comment_on', lazy='dynamic')
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
     def __repr__(self):
         return f"Post(' {self.title}', '{self.date_posted}')"
+
+
+class Comment(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    date_posted = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    content = db.Column(db.Text, nullable=False)
+    post_id = db.Column(db.Integer, db.ForeignKey('post.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
 
 class Sala(db.Model):
