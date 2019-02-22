@@ -47,6 +47,8 @@ def set_to_admin(username):
         db.session.commit()
 
 
-set_to_admin('dxtrlbrtry')
+create_all()
+create_users()
+create_posts()
 print(User.query.all())
 print(Post.query.all())
