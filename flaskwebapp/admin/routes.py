@@ -1,7 +1,7 @@
 from flask import Blueprint, request, render_template, flash, redirect, url_for
 from flaskwebapp import db
 from flaskwebapp.users.utils import requires_access
-from flaskwebapp.models import User
+from flaskwebapp.models import User, Post
 from flaskwebapp.admin.forms import EditUserForm, AddFriend
 
 admin = Blueprint('admin', __name__)
@@ -41,6 +41,9 @@ def edit_friends(username):
     form = AddFriend()
     if form.validate_on_submit():
         user_to_add = User.query.filter_by(username=form.username.data).first_or_404()
+        if user_to_add in user.friends:
+            flash(f'User already in friends list', 'warning')
+            return redirect(url_for('admin.edit_friends', username=username))
         user.friends.append(user_to_add)
         user_to_add.friends.append(user)
         db.session.commit()
@@ -49,7 +52,7 @@ def edit_friends(username):
     return render_template('edit_friends.html', user=user, form=form)
 
 
-@admin.route('/user/<string:username>/remove/<string:target_user>', methods=['GET'])
+@admin.route('/admin/user/<string:username>/remove/<string:target_user>', methods=['GET'])
 @requires_access('admin')
 def remove_friend(username, target_user):
     user = User.query.filter_by(username=username).first_or_404()
@@ -62,3 +65,19 @@ def remove_friend(username, target_user):
         db.session.commit()
         flash(f'You successfully unfriended ' + user.username + '.', 'success')
     return redirect(url_for('admin.edit_friends', username=user.username))
+
+
+@admin.route('/admin/user/<string:username>/delete/', methods=['GET'])
+@requires_access('admin')
+def delete_user(username):
+    user = User.query.filter_by(username=username).first_or_404()
+    for post in user.posts:
+        db.session.delete(post)
+    for request in user.requests:
+        db.session.delete(request)
+    for friend in user.friends:
+        friend.friends.remove(user)
+    db.session.delete(user)
+    db.session.commit()
+    flash(f'You successfully deleted ' + user.username + '.', 'success')
+    return redirect(url_for('admin.control_panel', username=user.username))

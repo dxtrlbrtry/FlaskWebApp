@@ -69,6 +69,7 @@
         <div class="form-group">
             {{ form.submit(class="btn btn-outline-info") }}
         </div>
+        <a class="btn btn-danger btn-sm" href="{{ url_for('admin.delete_user', username=user.username) }}">Delete User</a>
     </form>
 </div>
 {% endblock content %}

@@ -1,0 +1,2 @@
+from flaskwebapp.tests.user_tests.login_tests import LoginTestCases
+from flaskwebapp.tests.user_tests.register_tests import RegisterTestCases
