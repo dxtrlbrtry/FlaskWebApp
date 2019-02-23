@@ -31,9 +31,12 @@ class User(db.Model, UserMixin):
     image_file = db.Column(db.String(20), nullable=False, default='default.jpg')
     password = db.Column(db.String(60), nullable=False)
     access = db.Column(db.String(10), nullable=False, default='user')
+
     posts = db.relationship('Post', backref='author', lazy=True)
-    likes = db.relationship('Post', secondary=likes, backref='liked_by', lazy='dynamic')
     comments = db.relationship('Comment', backref='author', lazy='dynamic')
+
+    likes = db.relationship('Post', secondary=likes, backref='liked_by', lazy='dynamic')
+
     requests = db.relationship('User',
                                secondary=friend_requests,
                                primaryjoin=(friend_requests.c.user_id == id),
@@ -70,7 +73,9 @@ class Post(db.Model):
     date_posted = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     content = db.Column(db.Text, nullable=True)
     image_file = db.Column(db.String(20), nullable=True)
+
     comments = db.relationship('Comment', backref='comment_on', lazy='dynamic')
+
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
     def __repr__(self):
@@ -81,6 +86,7 @@ class Comment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     date_posted = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     content = db.Column(db.Text, nullable=False)
+
     post_id = db.Column(db.Integer, db.ForeignKey('post.id'), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 

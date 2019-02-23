@@ -1,6 +1,6 @@
 from flask import Blueprint, request, render_template, flash, redirect, url_for
 from flaskwebapp import db
-from flaskwebapp.users.utils import requires_access
+from flaskwebapp.users.utils import requires_access, save_picture
 from flaskwebapp.models import User, Post
 from flaskwebapp.admin.forms import EditUserForm, AddFriend
 
@@ -22,6 +22,9 @@ def edit_user(username):
     if form.validate_on_submit():
         user.username = form.username.data
         user.email = form.email.data
+        if form.picture.data:
+            picture_file = save_picture(form.picture.data)
+            user.image_file = picture_file
         user.access = form.access.data
         db.session.commit()
         flash(f'User updated', 'success')
@@ -29,7 +32,7 @@ def edit_user(username):
     elif request.method == 'GET':
         form.username.data = user.username
         form.email.data = user.email
-        form.image_file.data = user.image_file
+        form.picture.data = user.image_file
         form.access.data = user.access
     return render_template('edit_user.html', user=user, form=form)
 
@@ -52,7 +55,7 @@ def edit_friends(username):
     return render_template('edit_friends.html', user=user, form=form)
 
 
-@admin.route('/admin/user/<string:username>/remove/<string:target_user>', methods=['GET'])
+@admin.route('/admin/user/<string:username>/remove/<string:target_user>', methods=['POST'])
 @requires_access('admin')
 def remove_friend(username, target_user):
     user = User.query.filter_by(username=username).first_or_404()

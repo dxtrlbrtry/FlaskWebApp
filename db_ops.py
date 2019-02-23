@@ -40,15 +40,5 @@ def create_posts():
         db.session.commit()
 
 
-def set_to_admin(username):
-    with app.app_context():
-        user1 = User.query.filter_by(username=username).first()
-        user1.access = 'admin'
-        db.session.commit()
-
-
-create_all()
-create_users()
-create_posts()
 print(User.query.all())
 print(Post.query.all())

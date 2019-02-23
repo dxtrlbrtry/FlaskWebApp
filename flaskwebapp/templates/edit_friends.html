@@ -1,34 +1,18 @@
 {% extends 'layout.html' %}
+{% from 'macros/input.html' import input %}
+{% from 'macros/user_list.html' import render_users %}
+{% from 'macros/modal_popup.html' import render_modal with context %}
 {% block content %}
     <div class="content-section">
         <h2>Friends of {{ user.username }}</h2>
         <form action="" method="POST">
             {{ form.hidden_tag() }}
-            <div class="form-group">
-                {{ form.username.label(class="form-control-label") }}
-                {% if form.username.errors %}
-                {{ form.username(class="form-control form-control-lg is-invalid") }}
-                <div class="invalid-feedback">
-                    {% for error in form.username.errors %}
-                    <span> {{ error }} </span>
-                    {% endfor %}
-                </div>
-                {% else %}
-                {{ form.username(class="form-control form-control-lg") }}
-                {% endif %}
-            </div>
+            {{ input(form.username) }}
             <div class="form-group">
             {{ form.submit(class="btn btn-outline-info") }}
             </div>
         </form>
-        <div class="row">
-        {% for friend in user.friends %}
-            <div class="content-section">
-                <img class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pics/' + friend.image_file) }}">
-                <a href="{{ url_for('users.user_posts', username=friend.username) }}">{{ friend.username}}</a>
-            </div>
-            <a href="{{ url_for('admin.remove_friend', username=user.username, target_user=friend.username) }}">X</a>
-        {% endfor %}
-        </div>
+        <h2>Friends</h2>
+        {{ render_users(user.friends) }}
     </div>
 {% endblock content %}

@@ -1,0 +1,11 @@
+{% macro upload_image(field) %}
+    <div class="form-group">
+        {{ field.label() }}
+        {{ field(class="form-control-file") }}
+        {% if field %}
+            {% for error in field.errors %}
+                <span class="text-danger"> {{ error }} </span>
+            {% endfor %}
+        {% endif %}
+    </div>
+{% endmacro %}

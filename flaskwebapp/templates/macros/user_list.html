@@ -1,0 +1,14 @@
+{% macro render_users(list) %}
+    <div class="container">
+    <div class="col-md-4">
+        {% for user in list %}
+            {% if user %}
+                <div class="media content-section mr-4">
+                    <img class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pics/' + user.image_file) }}">
+                    <a href="{{ url_for('users.user_posts', username=user.username) }}">{{ user.username }}</a>
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+    </div>
+{% endmacro %}
