@@ -1,8 +1,8 @@
 from flask_login import login_required, current_user
 from flask import Blueprint, render_template, url_for, flash, redirect, request, abort
 from flaskwebapp import db
-from flaskwebapp.models import Post
-from flaskwebapp.posts.forms import PostForm
+from flaskwebapp.models import Post, Comment
+from flaskwebapp.posts.forms import PostForm, CommentForm
 from flaskwebapp.users.utils import post_photo
 
 posts = Blueprint('posts', __name__)
@@ -27,11 +27,18 @@ def new_post():
     return render_template('create_post.html', title='New Post', form=form)
 
 
-@posts.route('/post/<int:post_id>')
+@posts.route('/post/<int:post_id>', methods=['GET', 'POST'])
 @login_required
 def post(post_id):
     post = Post.query.get_or_404(post_id)
-    return render_template('post.html', title=post.title, legend='New Post', post=post)
+    form = CommentForm()
+    if form.validate_on_submit():
+        comment = Comment(content=form.content.data, author=current_user)
+        post.comments.append(comment)
+        db.session.commit()
+        flash(f'Comment successfully submitted', 'success')
+        return redirect(url_for('posts.post', post_id=post.id))
+    return render_template('post.html', title=post.title, legend='New Post', post=post, form=form)
 
 
 @posts.route('/post/<int:post_id>/update/', methods=['GET', 'POST'])
