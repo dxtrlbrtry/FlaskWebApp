@@ -30,11 +30,11 @@ class TestBase(TestCase):
             confirm_password=confirm_password),
                         follow_redirects=follow_redirects)
 
-    def login(self, email, password):
+    def login(self, email, password, follow_redirects=True):
         return self.client.post('/login/', data=dict(
             email=email,
             password=password
-        ), follow_redirects=True)
+        ), follow_redirects=follow_redirects)
 
     def logout(self):
         return self.client.get('/logout/', follow_redirects=True)

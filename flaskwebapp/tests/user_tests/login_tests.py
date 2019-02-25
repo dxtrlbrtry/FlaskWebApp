@@ -1,8 +1,22 @@
 from bs4 import BeautifulSoup
 from flaskwebapp.tests.TestBase import TestBase
+from flask import url_for
 
 
 class LoginTestCases(TestBase):
+    def test_go_to_login(self):
+        self.register('test_user', 'test@email.com', '123', '123')
+        self.assertRedirects(
+            self.login('test@email.com', '123', False),
+            url_for('main.home'))
+
+    def test_go_to_login_while_logged_in(self):
+        self.register('test_user', 'test@email.com', '123', '123')
+        self.login('test@email.com', '123')
+        self.assertRedirects(
+            self.client.get(url_for('users.login')),
+            url_for('main.home'))
+
     def test_login_successful(self):
         response = self.register('test_user', 'test@email.com', '123', '123')
         assert response.status_code == 200
