@@ -1,6 +1,6 @@
 {% extends 'layout.html' %}
-{% from 'macros/post.html' import render_post %}
-{% from 'macros/input.html' import input %}
+{% from 'macros/macros.html' import input %}
+{% from 'macros/macros.html' import render_post with context %}
 {% block content %}
     {{ render_post(post, False) }}
     <form action="{{ url_for('posts.post', post_id=post.id) }}" method="POST">

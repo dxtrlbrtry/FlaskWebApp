@@ -1,7 +1,6 @@
 {% extends 'layout.html' %}
-{% from 'macros/input.html' import input %}
-{% from 'macros/user_list.html' import render_users %}
-{% from 'macros/modal_popup.html' import render_modal with context %}
+{% from 'macros/macros.html' import input, render_users %}
+{% from 'macros/macros.html' import render_modal with context %}
 {% block content %}
     <div class="content-section">
         <h2>Friends of {{ user.username }}</h2>

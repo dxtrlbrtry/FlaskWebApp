@@ -3,7 +3,7 @@ from flask import Blueprint, render_template, url_for, flash, redirect, request,
 from flaskwebapp import db
 from flaskwebapp.models import Post, Comment, User
 from flaskwebapp.posts.forms import PostForm, CommentForm
-from flaskwebapp.users.utils import post_photo
+from flaskwebapp.posts.utils import post_photo
 
 posts = Blueprint('posts', __name__)
 
@@ -41,6 +41,14 @@ def post(post_id):
     return render_template('post.html', title=post.title, legend='New Post', post=post, form=form)
 
 
+@posts.route('/post/<string:username>/', methods=['GET'])
+@login_required
+def user_posts(username):
+    user = User.query.filter_by(username=username).first_or_404()
+    posts = Post.query.filter_by(author=user).order_by(Post.date_posted.desc())
+    return render_template('user_posts.html', posts=posts, user=user)
+
+
 @posts.route('/post/<int:post_id>/update/', methods=['GET', 'POST'])
 @login_required
 def update_post(post_id):
@@ -66,6 +74,8 @@ def delete_post(post_id):
     post = Post.query.get_or_404(post_id)
     if post.author != current_user:
         abort(403)
+    for comment in post.comments:
+        db.session.delete(comment)
     db.session.delete(post)
     db.session.commit()
     flash('Your post has been deleted!', 'success')
@@ -78,9 +88,9 @@ def like_post(post_id):
     post = Post.query.get_or_404(post_id)
     if current_user not in post.liked_by:
         post.liked_by.append(current_user)
-        return_text = 'Unlike'
+        button_text = 'Unlike'
     else:
         post.liked_by.remove(current_user)
-        return_text = 'Like'
+        button_text = 'Like'
     db.session.commit()
-    return jsonify({'likes': len(post.liked_by), 'text': return_text})
+    return jsonify({'likes': len(post.liked_by), 'text': button_text})

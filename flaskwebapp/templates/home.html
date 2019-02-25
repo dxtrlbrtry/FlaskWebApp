@@ -1,5 +1,5 @@
 {% extends 'layout.html' %}
-{% from 'macros/post.html' import render_post with context %}
+{% from 'macros/macros.html' import render_post with context %}
 {% block content %}
     {% for post in posts %}
         {{ render_post(post) }}

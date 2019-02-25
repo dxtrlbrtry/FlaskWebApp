@@ -1,4 +1,5 @@
 $(document).ready(function() {
+    //UPDATE LIKES ON BUTTON CLICK
     $(".btn-like").on("click", function() {
         var $this = $(this)
         var endpoint = $this.attr("onclick");
@@ -16,6 +17,7 @@ $(document).ready(function() {
         });
     });
 
+    //LOAD COMMENTS SECTION ON BUTTON CLICK
     $(".btn-comment").on("click", function() {
         var $this = $(this);
         var post_id = $this.attr("post_id");

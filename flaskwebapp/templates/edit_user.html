@@ -1,52 +1,51 @@
 {% extends 'layout.html' %}
-{% from 'macros/input.html' import input %}
-{% from 'macros/upload_image.html' import upload_image %}
-{% from 'macros/modal_popup.html' import render_modal with context %}
+{% from 'macros/macros.html' import input, upload_image %}
+{% from 'macros/macros.html' import render_modal with context %}
 {% block content %}
 <div class="content-section">
-    <div class="media">
-        <img class="rounded-circle account-img" src="{{ url_for('static', filename='profile_pics/' + user.image_file) }}">
-        <div class="media-body">
-            <h2 class="account-heading">{{ user.username }}</h2>
-            <p class="text-secondary">{{ user.email }}</p>
-        </div>
+  <div class="media">
+    <img class="rounded-circle account-img" src="{{ url_for('static', filename='profile_pics/' + user.image_file) }}">
+    <div class="media-body">
+      <h2 class="account-heading">{{ user.username }}</h2>
+      <p class="text-secondary">{{ user.email }}</p>
     </div>
-    <a href="{{ url_for('admin.edit_friends', username=user.username) }}">Friends</a>
-    <form method="POST" action=""  enctype="multipart/form-data">
-        {{ form.hidden_tag() }}
-        <fieldset class="form-group">
-            <legend class="border-bottom mb-4">Account Info</legend>
-            <p class="form-control-label">Id</p>
-            <p class="form-control form-control-lg disabled"> {{ user.id }}</p>
-            {{ input(form.username) }}
-            {{ input(form.email) }}
-            <p class="form-control-label">Password</p>
-            <p class="form-control form-control-lg disabled"> {{ user.password }}</p>
-            {{ upload_image(form.picture) }}
-            <div class="form-group">
-                {{ form.access.label(class="form-control-label") }}
-                {% if form.access.errors %}
-                {{ form.access(class="form-control form-control-lg is-invalid") }}
-                <div class="invalid-feedback">
-                    {% for error in form.access.errors %}
-                    <span> {{ error }} </span>
-                    {% endfor %}
-                </div>
-                {% else %}
-                {{ form.access() }}
-                {% endif %}
-            </div>
-        </fieldset>
-        <div class="form-group">
-            {{ form.submit(class="btn btn-outline-info") }}
+  </div>
+  <a href="{{ url_for('admin.edit_friends', username=user.username) }}">Friends</a>
+  <form method="POST" action="" enctype="multipart/form-data">
+    {{ form.hidden_tag() }}
+    <fieldset class="form-group">
+      <legend class="border-bottom mb-4">Account Info</legend>
+      <p class="form-control-label">Id</p>
+      <p class="form-control form-control-lg disabled"> {{ user.id }}</p>
+      {{ input(form.username) }}
+      {{ input(form.email) }}
+      <p class="form-control-label">Password</p>
+      <p class="form-control form-control-lg disabled" style="overflow: hidden"> {{ user.password }}</p>
+      {{ upload_image(form.picture) }}
+      <div class="form-group">
+        {{ form.access.label(class="form-control-label") }}
+        {% if form.access.errors %}
+        {{ form.access(class="form-control form-control-lg is-invalid") }}
+        <div class="invalid-feedback">
+          {% for error in form.access.errors %}
+          <span> {{ error }} </span>
+          {% endfor %}
         </div>
-        <a class="btn btn-danger btn-sm" href="{{ url_for('admin.delete_user', username=user.username) }}" data-toggle="modal" data-target="#deleteModal">Delete User</a>
-    </form>
+        {% else %}
+        {{ form.access() }}
+        {% endif %}
+      </div>
+    </fieldset>
+    <div class="form-group">
+      {{ form.submit(class="btn btn-outline-info") }}
+    </div>
+    {{ render_modal(
+      id='deleteModal',
+      text='Delete User',
+      title='Deleting the user will erase all its data.',
+      action=url_for('admin.delete_user', username=user.username),
+      method='GET',
+      button_style='danger') }}
+  </form>
 </div>
-{{ render_modal(
-            id='deleteModal',
-            title='Deleting the user will erase all its data.',
-            action=url_for('admin.delete_user', username=user.username),
-            method='GET',
-            button_style='danger') }}
 {% endblock content %}

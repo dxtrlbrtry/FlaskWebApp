@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileAllowed
 from wtforms import StringField, TextAreaField, SubmitField
-from wtforms.validators import DataRequired, ValidationError
+from wtforms.validators import DataRequired
 
 
 class PostForm(FlaskForm):
@@ -12,5 +12,5 @@ class PostForm(FlaskForm):
 
 
 class CommentForm(FlaskForm):
-    content = TextAreaField('Content', validators=[DataRequired()])
-    submit = SubmitField('Comment')
+    content = TextAreaField('Add Comment', validators=[DataRequired()])
+    submit = SubmitField('Submit')

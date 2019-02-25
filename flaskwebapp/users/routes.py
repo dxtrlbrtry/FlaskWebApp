@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, url_for, flash, redirect, request, abort
 from flask_login import login_user, current_user, logout_user, login_required
 from flaskwebapp import db, bcrypt
-from flaskwebapp.models import User, Post
+from flaskwebapp.models import User
 from flaskwebapp.users.forms import RegistrationForm, LoginForm, UpdateAccountForm, ResetPasswordForm, RequestResetForm
 from flaskwebapp.users.utils import save_picture, send_reset_email
 
@@ -96,14 +96,6 @@ def reset_token(token):
     return render_template('reset_token.html', title='Reset Password', form=form)
 
 
-@users.route('/user/<string:username>/', methods=['GET'])
-@login_required
-def user_posts(username):
-    user = User.query.filter_by(username=username).first_or_404()
-    posts = Post.query.filter_by(author=user).order_by(Post.date_posted.desc())
-    return render_template('user_posts.html', posts=posts, user=user)
-
-
 @users.route('/user/<string:username>/remove/', methods=['GET'])
 @login_required
 def remove_friend(username):
@@ -115,7 +107,7 @@ def remove_friend(username):
         user.friends.remove(current_user)
         db.session.commit()
         flash(f'You successfully unfriended ' + user.username + '.', 'success')
-    return redirect(url_for('users.user_posts', username=username))
+    return redirect(url_for('posts.user_posts', username=username))
 
 
 @users.route('/user/<string:username>/send/', methods=['GET'])
@@ -137,16 +129,16 @@ def send_request(username):
         user.requests.append(current_user)
         db.session.commit()
         flash(f'Friend request sent to ' + user.username + '.', 'success')
-    return redirect(url_for('users.user_posts', username=user.username))
+    return redirect(url_for('posts.user_posts', username=user.username))
 
 
-@users.route('/requests/', methods=['GET', 'POST'])
+@users.route('/requests/', methods=['GET'])
 @login_required
 def requests():
     return render_template('requests.html', requests=current_user.requests)
 
 
-@users.route('/requests/<string:username>/accept/', methods=['GET'])
+@users.route('/requests/<string:username>/accept/', methods=['POST'])
 @login_required
 def accept_request(username):
     user = User.query.filter_by(username=username).first_or_404()
@@ -162,7 +154,7 @@ def accept_request(username):
     return redirect(url_for('users.requests', username=username))
 
 
-@users.route('/request/<string:username>/refuse', methods=['GET'])
+@users.route('/request/<string:username>/refuse', methods=['POST'])
 @login_required
 def refuse_request(username):
     user = User.query.filter_by(username=username).first_or_404()

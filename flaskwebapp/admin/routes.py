@@ -1,7 +1,7 @@
 from flask import Blueprint, request, render_template, flash, redirect, url_for
 from flaskwebapp import db
 from flaskwebapp.users.utils import requires_access, save_picture
-from flaskwebapp.models import User, Post
+from flaskwebapp.models import User
 from flaskwebapp.admin.forms import EditUserForm, AddFriend
 
 admin = Blueprint('admin', __name__)

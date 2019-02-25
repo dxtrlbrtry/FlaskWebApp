@@ -2,15 +2,15 @@
 {% block content %}
 {% for request in requests %}
 <article class="media content-section">
-    <div class="media-body">
-        <h2>You have received a friend request from {{ request.username }}</h2>
-        <form method="GET" action="{{ url_for('users.accept_request', username=request.username) }}">
-            <input type="submit" value="Accept">
-        </form>
-        <form method=GET" action="{{ url_for('users.refuse_request', username=request.username) }}">
-            <input type="submit" value="Deny">
-        </form>
-    </div>
+  <div class="media-body">
+    <h2>You have received a friend request from {{ request.username }}</h2>
+    <form method="POST" action="{{ url_for('users.accept_request', username=request.username) }}">
+      <input type="submit" value="Accept">
+    </form>
+    <form method="POST" action="{{ url_for('users.refuse_request', username=request.username) }}">
+      <input type="submit" value="Deny">
+    </form>
+  </div>
 </article>
 {% endfor %}
 {% endblock content %}

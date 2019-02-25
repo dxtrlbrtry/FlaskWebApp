@@ -1,27 +1,42 @@
-from unittest import TestCase
+from flask_testing import TestCase
 from flaskwebapp import create_app, db
-
-app = create_app()
-app.config['TESTING'] = True
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///tests/test.db'
-app.config['WTF_CSRF_ENABLED'] = False
-app.config['DEBUG'] = False
 
 
 class TestBase(TestCase):
+
+    TESTING = True
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///tests/test.db'
+    SECRET_KEY = 'secret'
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
+    WTF_CSRF_ENABLED = False
+    DEBUG = False
+    render_templates = False
+
+    def create_app(self):
+        return create_app(self)
+
     def setUp(self):
-        self.app = app.test_client()
-
-        with app.app_context():
-            db.drop_all()
-            db.create_all()
-
-        response = self.app.get('/', follow_redirects=True)
-        assert response.status_code == 200
+        db.create_all()
 
     def tearDown(self):
-        with app.app_context():
-            db.session.remove()
-            db.drop_all()
+        db.session.remove()
+        db.drop_all()
+
+    def register(self, username, email, password, confirm_password, follow_redirects=True):
+        return self.client.post('/register/', data=dict(
+            username=username,
+            email=email,
+            password=password,
+            confirm_password=confirm_password),
+                        follow_redirects=follow_redirects)
+
+    def login(self, email, password):
+        return self.client.post('/login/', data=dict(
+            email=email,
+            password=password
+        ), follow_redirects=True)
+
+    def logout(self):
+        return self.client.get('/logout/', follow_redirects=True)
 
 

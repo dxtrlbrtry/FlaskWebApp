@@ -1,0 +1,129 @@
+<!--FORM TEXT INPUT FIELD-->
+<!--field - Field to be rendered-->
+{% macro input(field) %}
+<div class="form-group">
+  {{ field.label(class="form-control-label") }}
+  {% if field.errors %}
+  {{ field(class="form-control form-control-lg is-invalid") }}
+  <div class="invalid-feedback">
+    {% for error in field.errors %}
+    <span> {{ error }} </span>
+    {% endfor %}
+  </div>
+  {% else %}
+  {{ field(class="form-control form-control-lg") }}
+  {% endif %}
+</div>
+{% endmacro %}
+
+<!--FORM IMAGE FIELD-->
+<!--field - field to be rendered-->
+{% macro upload_image(field) %}
+<div class="form-group">
+  {{ field.label() }}
+  {{ field(class="form-control-file") }}
+  {% if field %}
+  {% for error in field.errors %}
+  <span class="text-danger"> {{ error }} </span>
+  {% endfor %}
+  {% endif %}
+</div>
+{% endmacro %}
+
+<!--MODAL POPUP-->
+<!--id - Triggered by element
+    text - button text
+    title - Modal title
+    action - Action performed on OK
+    method - request method
+    button_style - button style-->
+{% macro render_modal(id, text, title, action, method, button_style) %}
+<button class="btn btn-{{ button_style }} btn-sm" data-toggle="modal" data-target="#{{ id }}">{{ text }}</button>
+<div class="modal fade" id="{{ id }}" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="ModalLabel">{{ title }}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <form action="{{ action }}" method="{{ method }}">
+          <input class="btn btn-{{ button_style }}" type="submit" value="{{ text }}">
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endmacro %}
+
+<!--POST ELEMENT-->
+<!--post - post to be rendered
+    add_comment - add comment button visibility-->
+{% macro render_post(post, add_comment=True) %}
+<article class="media content-section">
+  <img class="rounded-circle article-img"
+       src="{{ url_for('static', filename='profile_pics/' + post.author.image_file) }}">
+  <div class="media-body">
+    <div class="article-metadata">
+      <a class="mr-2" href="{{ url_for('posts.user_posts', username=post.author.username) }}">{{ post.author.username
+        }}</a>
+      <small class="text-muted">{{ post.date_posted.strftime('%Y-%m-%d') }}</small>
+    </div>
+    <h2><a class="article-title" href="{{ url_for('posts.post', post_id=post.id) }}">{{ post.title }}</a></h2>
+    <p class="article-content">{{ post.content }}</p>
+    {% if post.image_file %}
+    <img src="{{ url_for('static', filename='posted_images/' + post.image_file) }}">
+    {% endif %}
+    <div class="media-footer mt-3 mb-2 expand-md">
+      <span id="likesCount{{ post.id }}">{{ post.liked_by|count }}</span>
+      <button class="btn btn-outline-info btn-like" post_id="{{ post.id }}"
+              onclick="{{ url_for('posts.like_post', post_id=post.id) }}">
+        {% if current_user not in post.liked_by %}
+          Like
+        {% else %}
+          Unlike
+        {% endif %}
+      </button>
+      <span id="commentsCount{{ post.id }}">{{ post.comments.count() }}</span>
+      <button class="btn btn-outline-info btn-comment mr-auto" post_id="{{ post.id }}">Comments</button>
+      {% if post.author == current_user %}
+        {{ render_modal('deleteModal', 'Delete Post', 'modal_delete', url_for('posts.delete_post', post_id=post.id), 'POST', 'danger') }}
+        <a class="btn btn-secondary btn-sm" href="{{ url_for('posts.update_post', post_id=post.id) }}">Update</a>
+      {% endif %}
+    </div>
+    <div class="comments-section{{ post.id }}" style="display: none">
+      <h3>Comments</h3>
+      {% for comment in post.comments %}
+      <div class="comments-section">
+        <a class="mr-2" href="{{ url_for('posts.user_posts', username=comment.author.username) }}">{{
+          comment.author.username }}</a>
+        <small class="text-muted">{{ comment.date_posted.strftime('%Y-%m-%d') }}</small>
+        <p>{{ comment.content }}</p>
+      </div>
+      {% endfor %}
+      {% if add_comment %}
+        <a href="{{ url_for('posts.post', post_id=post.id) }}">Add Comment</a>
+      {% endif %}
+    </div>
+  </div>
+</article>
+{% endmacro %}
+
+<!--RENDER USER LIST-->
+<!--list - user list to be rendered-->
+{% macro render_users(list) %}
+<div class="container">
+  <div class="col-md-12">
+    {% for user in list %}
+    <div class="media content-section mr-4">
+      <img class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pics/' + user.image_file) }}">
+      <a href="{{ url_for('posts.user_posts', username=user.username) }}">{{ user.username }}</a>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endmacro %}
