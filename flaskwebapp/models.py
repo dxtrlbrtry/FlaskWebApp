@@ -32,7 +32,8 @@ class User(db.Model, UserMixin):
     password = db.Column(db.String(60), nullable=False)
     access = db.Column(db.String(10), nullable=False, default='user')
 
-    posts = db.relationship('Post', backref='author', lazy=True)
+    host = db.relationship('Event', backref='hosted_by', lazy='dynamic')
+    posts = db.relationship('Post', backref='author', lazy='dynamic')
     comments = db.relationship('Comment', backref='author', lazy='dynamic')
 
     likes = db.relationship('Post', secondary=likes, backref='liked_by', lazy='dynamic')
@@ -91,12 +92,17 @@ class Comment(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
 
-class Sala(db.Model):
+class Event(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(20), nullable=False)
-    email = db.Column(db.String(120), unique=True, nullable=False)
-    address = db.Column(db.String(100), nullable=False, default='default_address')
-    schedule = db.Column(db.String(250), nullable=False, default='default_schedule')
+    host = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+#    maximum_attendants = db.Column(db.Integer, nullable=False)
+#    current_attendants = db.Column(db.Integer, nullable=False, default=0)
+    theme = db.Column(db.String(100), nullable=False)
+#    location_name = db.Column(db.String(100), nullable=False)
+#    location_address = db.Column(db.String(100), nullable=True)
+    start_time = db.Column(db.DateTime, nullable=False)
+    end_time = db.Column(db.DateTime, nullable=False)
+
 
     def __repr__(self):
-        return f"Sala(' {self.name}', '{self.address}')"
+        return f"Event(' {self.host}', '{self.theme}')"

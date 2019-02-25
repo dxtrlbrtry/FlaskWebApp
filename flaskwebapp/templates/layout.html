@@ -73,15 +73,13 @@
                 {% if current_user.is_authenticated %}
                     <p class="nav-item nav-link">Hello {{ current_user.username }}</p>
                 {% endif %}
-                <h3>Our Sidebar</h3>
-                <p class="text-muted">You can put any information here you'd like
-                <ul>
-                    <li>Latest Posts</li>
-                    <li>Announcements</li>
-                    <li>Calendars</li>
-                    <li>etc</li>
-                </ul>
-                </p>
+                <a class="btn btn-info" href="{{ url_for('events.create_event') }}">Create Event</a>
+                <div class="events-list">
+                    {% for event in events %}
+                        <p>{{ event.theme }}</p>
+                    {% endfor %}
+                </div>
+                <a class="btn btn-info refresh-events">Refresh</a>
             </div>
         </div>
     </div>

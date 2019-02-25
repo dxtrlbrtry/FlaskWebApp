@@ -82,7 +82,7 @@ def delete_post(post_id):
     return redirect(url_for('main.home'))
 
 
-@posts.route('/post/<int:post_id>/like/', methods=['GET'])
+@posts.route('/post/<int:post_id>/like/', methods=['POST'])
 @login_required
 def like_post(post_id):
     post = Post.query.get_or_404(post_id)

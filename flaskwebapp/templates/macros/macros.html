@@ -3,7 +3,7 @@
 {% macro input(field) %}
 <div class="form-group">
   {{ field.label(class="form-control-label") }}
-  {% if field.errors %}
+    {% if field.errors %}
   {{ field(class="form-control form-control-lg is-invalid") }}
   <div class="invalid-feedback">
     {% for error in field.errors %}
@@ -37,9 +37,9 @@
     action - Action performed on OK
     method - request method
     button_style - button style-->
-{% macro render_modal(id, text, title, action, method, button_style) %}
-<button class="btn btn-{{ button_style }} btn-sm" data-toggle="modal" data-target="#{{ id }}">{{ text }}</button>
-<div class="modal fade" id="{{ id }}" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+{% macro render_modal(text, title, action, method, button_style) %}
+<button class="btn btn-{{ button_style }} btn-sm" data-toggle="modal" data-target="#modal">{{ text }}</button>
+<div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
      aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -91,7 +91,7 @@
       <span id="commentsCount{{ post.id }}">{{ post.comments.count() }}</span>
       <button class="btn btn-outline-info btn-comment mr-auto" post_id="{{ post.id }}">Comments</button>
       {% if post.author == current_user %}
-        {{ render_modal('deleteModal', 'Delete Post', 'modal_delete', url_for('posts.delete_post', post_id=post.id), 'POST', 'danger') }}
+        {{ render_modal('Delete Post', 'Are you sure you want to delete this post?', url_for('posts.delete_post', post_id=post.id), 'POST', 'danger') }}
         <a class="btn btn-secondary btn-sm" href="{{ url_for('posts.update_post', post_id=post.id) }}">Update</a>
       {% endif %}
     </div>

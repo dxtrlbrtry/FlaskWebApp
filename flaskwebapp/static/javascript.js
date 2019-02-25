@@ -7,13 +7,25 @@ $(document).ready(function() {
 
         req = $.ajax({
             url : endpoint,
-            type : 'GET',
+            type : 'POST',
             data : {}
         });
 
         req.done(function(data) {
             $("#likesCount"+post_id).text(data.likes);
             $this.text(data.text);
+        });
+    });
+
+    //REFRESH EVENTS LIST
+    $('.refresh-events').on('click', function() {
+        req = $.ajax({
+            url : '/events/get/',
+            type : 'GET'
+        });
+
+        req.done(function(data) {
+            $('.event-list').html(data.events);
         });
     });
 

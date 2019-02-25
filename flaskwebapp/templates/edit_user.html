@@ -39,13 +39,12 @@
     <div class="form-group">
       {{ form.submit(class="btn btn-outline-info") }}
     </div>
+  </form>
     {{ render_modal(
-      id='deleteModal',
       text='Delete User',
       title='Deleting the user will erase all its data.',
       action=url_for('admin.delete_user', username=user.username),
       method='GET',
       button_style='danger') }}
-  </form>
 </div>
 {% endblock content %}

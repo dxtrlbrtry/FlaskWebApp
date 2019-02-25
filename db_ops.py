@@ -1,5 +1,6 @@
 from flaskwebapp import create_app, db, bcrypt
-from flaskwebapp.models import User, Post, Sala
+from flaskwebapp.models import User, Post, Event
+from datetime import datetime
 
 app = create_app()
 app.app_context().push()
@@ -40,5 +41,10 @@ def create_posts():
         db.session.commit()
 
 
-print(User.query.all())
-print(Post.query.all())
+user1= User.query.filter_by(username='dxtrlbrtry').first()
+
+event = Event(theme='sport', start_time=datetime.utcnow(), end_time=datetime.utcnow(), hosted_by=user1)
+db.session.add(event)
+db.session.commit()
+print(event.hosted_by)
+pass
