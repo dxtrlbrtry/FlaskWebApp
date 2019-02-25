@@ -1,7 +1,7 @@
 from flask_login import login_required, current_user
-from flask import Blueprint, render_template, url_for, flash, redirect, request, abort
+from flask import Blueprint, render_template, url_for, flash, redirect, request, abort, jsonify
 from flaskwebapp import db
-from flaskwebapp.models import Post, Comment
+from flaskwebapp.models import Post, Comment, User
 from flaskwebapp.posts.forms import PostForm, CommentForm
 from flaskwebapp.users.utils import post_photo
 
@@ -78,7 +78,9 @@ def like_post(post_id):
     post = Post.query.get_or_404(post_id)
     if current_user not in post.liked_by:
         post.liked_by.append(current_user)
+        return_text = 'Unlike'
     else:
         post.liked_by.remove(current_user)
+        return_text = 'Like'
     db.session.commit()
-    return redirect(url_for('main.home'))
+    return jsonify({'likes': len(post.liked_by), 'text': return_text})

@@ -2,22 +2,14 @@
 {% from 'macros/post.html' import render_post %}
 {% from 'macros/input.html' import input %}
 {% block content %}
-    {{ render_post(post) }}
-    <div class="content-section">
-        <h3>Comments</h3>
-        <form action="" method="POST">
-            {{ form.hidden_tag() }}
-            <fieldset>
-                {{ input(form.content) }}
-            </fieldset>
-            <div class="form-group">
-                {{ form.submit(class="btn btn-outline-info") }}
-            </div>
-        </form>
-        {% for comment in post.comments %}
-            <a class="mr-2" href="{{ url_for('users.user_posts', username=comment.author.username) }}">{{ comment.author.username }}</a>
-            <small class="text-muted">{{ comment.date_posted.strftime('%Y-%m-%d') }}</small>
-            <p>{{ comment.content }}</p>
-        {% endfor %}
-    </div>
+    {{ render_post(post, False) }}
+    <form action="{{ url_for('posts.post', post_id=post.id) }}" method="POST">
+       {{ form.hidden_tag() }}
+       <fieldset>
+           {{ input(form.content) }}
+       </fieldset>
+       <div class="form-group">
+           {{ form.submit(class="btn btn-outline-info") }}
+       </div>
+    </form>
 {% endblock content %}
