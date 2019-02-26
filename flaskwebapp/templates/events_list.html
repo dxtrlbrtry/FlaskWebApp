@@ -1,0 +1,7 @@
+{% extends 'layout.html' %}
+{% from 'macros/macros.html' import render_event %}
+{% block content %}
+  {% for event in events %}
+    {{ render_event(event) }}
+  {% endfor %}
+{% endblock content %}

@@ -127,3 +127,13 @@
   </div>
 </div>
 {% endmacro %}
+
+<!--RENDER EVENT TEMPLATE-->
+{% macro render_event(event) %}
+<div class="content-section mt-2">
+  <p>Theme: {{ event.theme }} </p>
+  <p>Hosted by {{ event.hosted_by }}</p>
+  <p>Date: {{ event.start_time.strftime('%B-%d')}}<br> Starts At: {{ event.start_time.strftime('%H:%M') }} </p>
+  <p>Duration: {{ event.end_time.strftime('%H hours %M minutes') }}</p>
+</div>
+{% endmacro %}

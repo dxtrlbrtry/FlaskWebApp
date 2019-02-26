@@ -17,18 +17,6 @@ $(document).ready(function() {
         });
     });
 
-    //REFRESH EVENTS LIST
-    $('.refresh-events').on('click', function() {
-        req = $.ajax({
-            url : '/events/get/',
-            type : 'GET'
-        });
-
-        req.done(function(data) {
-            $('.event-list').html(data.events);
-        });
-    });
-
     //LOAD COMMENTS SECTION ON BUTTON CLICK
     $(".btn-comment").on("click", function() {
         var $this = $(this);

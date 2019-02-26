@@ -101,7 +101,7 @@ class Event(db.Model):
 #    location_name = db.Column(db.String(100), nullable=False)
 #    location_address = db.Column(db.String(100), nullable=True)
     start_time = db.Column(db.DateTime, nullable=False)
-    end_time = db.Column(db.DateTime, nullable=False)
+    duration = db.Column(db.DateTime, nullable=False)
 
 
     def __repr__(self):
