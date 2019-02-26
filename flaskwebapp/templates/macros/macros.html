@@ -130,10 +130,13 @@
 
 <!--RENDER EVENT TEMPLATE-->
 {% macro render_event(event) %}
-<div class="content-section mt-2">
-  <p>Theme: {{ event.theme }} </p>
-  <p>Hosted by {{ event.hosted_by }}</p>
-  <p>Date: {{ event.start_time.strftime('%B-%d')}}<br> Starts At: {{ event.start_time.strftime('%H:%M') }} </p>
-  <p>Duration: {{ event.end_time.strftime('%H hours %M minutes') }}</p>
-</div>
+  <tr>
+    <td>{{ event.hosted_by.username }}</td>
+    <td>{{ event.theme }} </td>
+    <td>{{ event.location_name }}</td>
+    <td>{{ event.start_time.strftime('%Y-%b-%d') }}</td>
+    <td>{{ event.start_time.strftime('%H:%M') }} - {{ event.end_time.strftime('%H:%M') }}</td>
+    <td>{{ event.current_attendants }}/{{ event.maximum_attendants }}</td>
+    <a href="{{ url_for(events.join_event, event_id=event.id)">Join</a>
+  </tr>
 {% endmacro %}

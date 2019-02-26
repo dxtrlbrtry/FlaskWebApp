@@ -8,6 +8,14 @@ h1, h2, h3, h4, h5, h6 {
   color: #444444;
 }
 
+tr {
+    border-top: 1px solid #e3e3e3;
+}
+
+td {
+    padding-top: 10px;
+}
+
 .disabled {
     background: #dddddd
 }

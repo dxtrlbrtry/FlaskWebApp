@@ -1,7 +1,19 @@
 {% extends 'layout.html' %}
 {% from 'macros/macros.html' import render_event %}
 {% block content %}
+<div class="content-section">
+<table style="width: 100%">
+  <tr>
+    <th>Host</th>
+    <th>Theme</th>
+    <th>Location</th>
+    <th>Date</th>
+    <th>Between</th>
+    <th>Slots</th>
+  </tr>
   {% for event in events %}
     {{ render_event(event) }}
   {% endfor %}
+</table>
+</div>
 {% endblock content %}

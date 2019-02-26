@@ -1,6 +1,6 @@
 from flaskwebapp import create_app, db, bcrypt
 from flaskwebapp.models import User, Post, Event
-from datetime import datetime
+from datetime import datetime, timedelta
 
 app = create_app()
 app.app_context().push()
@@ -41,10 +41,24 @@ def create_posts():
         db.session.commit()
 
 
-user1= User.query.filter_by(username='dxtrlbrtry').first()
+def create_events():
+    user1 = User.query.filter_by(username='dxtrlbrtry').first()
+    for x in range(1, 5):
+        event = Event(
+            host=user1,
+            maximum_attendants=2,
+            theme=f'test{x}',
+            location_name=f'location{x}',
+            start_time=datetime.utcnow() + timedelta(hours=x),
+            end_time=datetime.utcnow() + timedelta(hours=3, minutes=15 + x))
+        db.session.add(event)
+    db.session.commit()
 
-event = Event(theme='sport', start_time=datetime.utcnow(), end_time=datetime.utcnow(), hosted_by=user1)
-db.session.add(event)
+
+create_all()
+create_users()
+create_posts()
+create_events()
+
 db.session.commit()
-print(event.hosted_by)
 pass
