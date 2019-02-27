@@ -9,7 +9,7 @@ class EventForm(FlaskForm):
     start_date = DateTimeLocalField('Start Date', format='%Y-%m-%dT%H:%M', validators=[DataRequired()])
     duration_hours = IntegerField('Hours', validators=[DataRequired()])
     duration_minutes = IntegerField('Minutes', validators=[DataRequired()])
-    maximum_attendants = IntegerField('Max Slots', validators=[DataRequired()], min=0, max=20)
+    maximum_attendants = IntegerField('Max Slots', validators=[DataRequired()])
     location_name = StringField('Location', validators=[DataRequired()])
     description = TextAreaField('Description')
     submit = SubmitField('Post')

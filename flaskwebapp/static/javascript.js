@@ -1,7 +1,7 @@
 $(document).ready(function() {
     //UPDATE LIKES ON BUTTON CLICK
     $(".btn-like").on("click", function() {
-        var $this = $(this)
+        var $this = $(this);
         var endpoint = $this.attr("onclick");
         var post_id = $this.attr("post_id");
 

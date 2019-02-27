@@ -19,7 +19,7 @@ def create_event():
             start_time=form.start_date.data,
             end_time=end_time,
             hosted_by=current_user,
-            location=form.location_name.data,
+            location_name=form.location_name.data,
             maximum_attendants=form.maximum_attendants.data)
         if form.description.data:
             event.description = form.description.data
@@ -30,10 +30,10 @@ def create_event():
     return render_template('create_event.html', title='New Event', form=form)
 
 
-@events.route('/events/get/', methods=['GET'])
+@events.route('/events/', methods=['GET'])
 @login_required
 def events_list():
-    events = Event.query.order_by(Event.start_time.desc())
+    events = Event.query.order_by(Event.start_time.asc())
     return render_template('events_list.html', events=events)
 
 
@@ -41,5 +41,26 @@ def events_list():
 @login_required
 def join_event(event_id):
     event = Event.query.get_or_404(event_id)
-    event.current_attendants.append(current_user)
+    if current_user in event.host.event_requests:
+        flash(f'Request already sent', 'warning')
+    elif current_user in event.attendants:
+        event.event_request_of.remove(current_user)
+        flash(f'Successfully left event', 'warning')
+    else:
+        event.event_request_of.append(current_user)
+    db.session.commit()
+    return redirect(url_for('events.events_list'))
 
+
+@events.route('/events/join_request/<int:event_id>', methods=['POST'])
+@login_required
+def join_request(event_id):
+    event = Event.query.get_or_404(event_id)
+    if current_user in event.host.event_requests:
+        flash(f'Request already sent', 'warning')
+    elif current_user in event.attendants:
+        flash(f'Your request was already accepted', 'warning')
+    else:
+        event.host.event_requests.append(current_user)
+        db.session.commit()
+    return redirect(url_for('events.events_list'))

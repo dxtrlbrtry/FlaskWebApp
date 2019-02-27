@@ -14,7 +14,6 @@ likes = db.Table('likes',
                   db.Column('user_id', db.Integer, db.ForeignKey('user.id')),
                   db.Column('post_id', db.Integer, db.ForeignKey('post.id')))
 
-
 friend = db.Table('friend',
                   db.Column('user_id', db.Integer, db.ForeignKey('user.id')),
                   db.Column('friend_id', db.Integer, db.ForeignKey('user.id')))
@@ -23,9 +22,13 @@ friend_requests = db.Table('friend_requests',
                            db.Column('user_id', db.Integer, db.ForeignKey('user.id')),
                            db.Column('friend_id', db.Integer, db.ForeignKey('user.id')))
 
-event_attends = db.Table('event_attends',
-                         db.Column('user_id', db.Integer, db.ForeignKey('user.id')),
-                         db.Column('event_id', db.Integer, db.ForeignKey('event.id')))
+event_attendants = db.Table('event_attendants',
+                           db.Column('user_id', db.Integer, db.ForeignKey('user.id')),
+                           db.Column('event_id', db.Integer, db.ForeignKey('event.id')))
+
+event_requests = db.Table('event_requests',
+                           db.Column('user_id', db.Integer, db.ForeignKey('user.id')),
+                           db.Column('requester_id', db.Integer, db.ForeignKey('user.id')))
 
 
 class User(db.Model, UserMixin):
@@ -36,13 +39,17 @@ class User(db.Model, UserMixin):
     password = db.Column(db.String(60), nullable=False)
     access = db.Column(db.String(10), nullable=False, default='user')
 
-    host = db.relationship('Event', backref='hosted_by', lazy='dynamic')
     posts = db.relationship('Post', backref='author', lazy='dynamic')
     comments = db.relationship('Comment', backref='author', lazy='dynamic')
 
     likes = db.relationship('Post', secondary=likes, backref='liked_by', lazy='dynamic')
-    event_attends = db.relationship('Event', secondary=event_attends, backref='attended', lazy='dynamic')
 
+    event_requests = db.relationship('User',
+                               secondary=event_requests,
+                               primaryjoin=(event_requests.c.user_id == id),
+                               secondaryjoin=(event_requests.c.requester_id == id),
+                               backref='event_request_from',
+                               lazy='dynamic')
     requests = db.relationship('User',
                                secondary=friend_requests,
                                primaryjoin=(friend_requests.c.user_id == id),
@@ -99,15 +106,15 @@ class Comment(db.Model):
 
 class Event(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    host = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     maximum_attendants = db.Column(db.Integer, nullable=False)
     theme = db.Column(db.String(100), nullable=False)
     location_name = db.Column(db.String(100), nullable=False)
     start_time = db.Column(db.DateTime, nullable=False)
     end_time = db.Column(db.DateTime, nullable=False)
 
-    attendants = db.relationship('User', backref='attends_to', lazy=False)
-
+    attendants = db.relationship('User', secondary=event_attendants, lazy='subquery', backref='attending_to')
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    host = db.relationship("User", backref='hosted_by')
 
     def __repr__(self):
         return f"Event(' {self.host}', '{self.theme}')"
