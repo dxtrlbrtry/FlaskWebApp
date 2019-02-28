@@ -6,63 +6,22 @@
             {{ form.hidden_tag() }}
             <fieldset class="form-group">
                 {{ input(form.theme) }}
-                {{ form.datefield }}
-                {{ form.timefield }}
-                {{ form.datetimefield }}
                 <div class="row">
-                    <div class="form-group col-md-6 datepicker">
-                        {{ form.start_date.label(class="form-control-label") }}
-                        {% if form.start_date.errors %}
-                        {{ form.start_date(class="form-control form-control-lg is-invalid") }}
-                        <div class="invalid-feedback">
-                            {% for error in form.start_date.errors %}
-                            <span> {{ error }} </span>
-                            {% endfor %}
-                        </div>
-                        {% else %}
-                        {{ form.start_date(class="form-control form-control-lg") }}
-                        {% endif %}
+                    <div class="col-md-3">
+                        {{ input(form.start_date) }}
                     </div>
-                    <div class="form-group col-md-3">
-                        {{ form.duration_hours.label(class="form-control-label") }}
-                        {% if form.duration_hours.errors %}
-                        {{ form.duration_hours(class="form-control form-control-lg is-invalid") }}
-                        <div class="invalid-feedback">
-                            {% for error in form.duration_hours.errors %}
-                            <span> {{ error }} </span>
-                            {% endfor %}
-                        </div>
-                        {% else %}
-                        {{ form.duration_hours(class="form-control form-control-lg") }}
-                        {% endif %}
+                    <div class="col-md-2">
+                        {{ input(form.duration_hours) }}
                     </div>
-                    <div class="form-group col-md-3">
-                        {{ form.duration_minutes.label(class="form-control-label") }}
-                        {% if form.duration_minutes.errors %}
-                        {{ form.duration_minutes(class="form-control form-control-lg is-invalid") }}
-                        <div class="invalid-feedback">
-                            {% for error in form.duration_minutes.errors %}
-                            <span> {{ error }} </span>
-                            {% endfor %}
-                        </div>
-                        {% else %}
-                        {{ form.duration_minutes(class="form-control form-control-lg") }}
-                        {% endif %}
+                    <div class="col-md-2">
+                        {{ input(form.duration_minutes) }}
                     </div>
-                    <div class="form-group col-md-3">
-                        {{ form.maximum_attendants.label(class="form-control-label") }}
-                        {% if form.maximum_attendants.errors %}
-                        {{ form.maximum_attendants(class="form-control form-control-lg is-invalid") }}
-                        <div class="invalid-feedback">
-                            {% for error in form.maximum_attendants.errors %}
-                            <span> {{ error }} </span>
-                            {% endfor %}
-                        </div>
-                        {% else %}
-                        {{ form.maximum_attendants(class="form-control form-control-lg") }}
-                        {% endif %}
+                    <div class="col-md-2">
+                        {{ input(form.maximum_attendants) }}
                     </div>
-                    {{ input(form.location_name) }}
+                    <div class="col-md-3">
+                        {{ input(form.location_name) }}
+                    </div>
                 </div>
             </fieldset>
             <div class="form-group">

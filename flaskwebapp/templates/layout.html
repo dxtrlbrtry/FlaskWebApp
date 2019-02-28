@@ -63,10 +63,8 @@
                     {% endfor %}
                 {% endif %}
             {% endwith %}
-            <div style="overflow-y: scroll">
-                {% block content %}
-                {% endblock content %}
-            </div>
+            {% block content %}
+            {% endblock content %}
         </div>
         <div class="col-md-3">
             <div class="content-section right-panel">
@@ -74,6 +72,7 @@
                     <p class="nav-item nav-link">Hello {{ current_user.username }}</p>
                     <a class="btn btn-outline-info" href="{{ url_for('events.create_event') }}">Create Event</a>
                 {% endif %}
+                <a class="mt-20" href="{{ url_for('main.test') }}">Test</a>
             </div>
         </div>
     </div>
