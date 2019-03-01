@@ -37,7 +37,7 @@
     action - Action performed on OK
     method - request method
     button_style - button style-->
-{% macro render_modal(text, title, action, method, button_style) %}
+{% macro render_modal(text, title, action, method, button_style='info', form=None) %}
 <button class="btn btn-{{ button_style }} btn-sm" data-toggle="modal" data-target="#modal">{{ text }}</button>
 <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
      aria-hidden="true">
@@ -52,6 +52,10 @@
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         <form action="{{ action }}" method="{{ method }}">
+            {% if form %}
+                {{ form.hidden_tag() }}
+                {{ input(form.message) }}
+            {% endif %}
           <input class="btn btn-{{ button_style }}" type="submit" value="{{ text }}">
         </form>
       </div>
@@ -138,12 +142,14 @@
     <td>{{ event.start_time.strftime('%H:%M') }} - {{ event.end_time.strftime('%H:%M') }}</td>
     <td>{{ event.attendants|count }}/{{ event.maximum_attendants }}</td>
     <td>
-      {% if current_user in event.host.event_requests %}
-        <p>Request already sent</p>
-      {% elif current_user in event.attendants %}
-        <a href="{{ url_for('events.join_event', event_id=event.id) }}">Leave</a>
+      {% if current_user in event.attendants %}
+          <a href="{{ url_for('events.event_view', event_id=event.id) }}">View</a>
+      {% elif event.attendants|count >= event.maximum_attendants %}
+          <p style="font-size: 0.7rem" class="text-muted">Event full</p>
+      {% elif current_user in event.join_requests  %}
+          <p style="font-size: 0.7rem" class="text-muted">Request sent</p>
       {% else %}
-        <a href="{{ url_for('events.join_event', event_id=event.id) }}">Join</a>
+          <a href="{{ url_for('events.send_event_request', event_id=event.id) }}">Join</a>
       {% endif %}
     </td>
   </tr>

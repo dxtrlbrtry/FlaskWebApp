@@ -1,0 +1,12 @@
+{% extends 'layout.html' %}
+{% block content %}
+{% for event in events %}
+<div class="content-section">
+    <a href="{{ url_for('events.event_view', event_id=event.id) }}">{{ event. theme }}</a>
+    <p>{{ event.location_name }}</p>
+    <p>{{ event.start_time.strftime('%Y-%b-%d') }}</p>
+    <p>{{ event.start_time.strftime('%H:%M') }} - {{ event.end_time.strftime('%H:%M') }}</p>
+    <p>{{ event.attendants|count }}/{{ event.maximum_attendants }}</p>
+</div>
+{% endfor %}
+{% endblock content %}

@@ -13,3 +13,8 @@ class EventForm(FlaskForm):
     location_name = StringField('Location', validators=[DataRequired()])
     description = TextAreaField('Description')
     submit = SubmitField('Post')
+
+
+class EventMessage(FlaskForm):
+    message = TextAreaField('Message')
+    submit = SubmitField('Leave')
