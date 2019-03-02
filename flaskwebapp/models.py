@@ -30,6 +30,10 @@ event_attendants = db.Table('event_attendants',
                            db.Column('user_id', db.Integer, db.ForeignKey('user.id')),
                            db.Column('event_id', db.Integer, db.ForeignKey('event.id')))
 
+event_invites = db.Table('event_invites',
+                           db.Column('user_id', db.Integer, db.ForeignKey('user.id')),
+                           db.Column('event_id', db.Integer, db.ForeignKey('event.id')))
+
 
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
@@ -41,14 +45,13 @@ class User(db.Model, UserMixin):
 
     posts = db.relationship('Post', backref='author', lazy='dynamic')
     comments = db.relationship('Comment', backref='author', lazy='dynamic')
-
     likes = db.relationship('Post', secondary=likes, backref='liked_by', lazy='dynamic')
 
     hosted_events = db.relationship('Event', backref='host', lazy='dynamic')
     attended_events = db.relationship('Event', secondary=event_attendants, lazy='subquery', backref=db.backref('attendants', lazy=True))
+    invites = db.relationship('Event', secondary=event_invites, lazy='subquery', backref=db.backref('invites_sent', lazy=True))
 
-    requests = db.relationship('User',
-                               secondary=friend_requests,
+    requests = db.relationship('User', secondary=friend_requests,
                                primaryjoin=(friend_requests.c.user_id == id),
                                secondaryjoin=(friend_requests.c.friend_id == id),
                                backref='request_of',
@@ -105,12 +108,12 @@ class Event(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     maximum_attendants = db.Column(db.Integer, nullable=False)
     theme = db.Column(db.String(100), nullable=False)
-    join_requests = db.relationship('User', secondary=event_requests, backref='requester', lazy=False, uselist=True)
     location_name = db.Column(db.String(100), nullable=False)
     start_time = db.Column(db.DateTime, nullable=False)
     end_time = db.Column(db.DateTime, nullable=False)
 
     host_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    join_requests = db.relationship('User', secondary=event_requests, backref='requester', lazy=False, uselist=True)
 
     def __repr__(self):
         return f"Event(' {self.host}', '{self.theme}')"

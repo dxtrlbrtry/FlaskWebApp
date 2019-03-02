@@ -1,19 +1,27 @@
 {% extends 'layout.html' %}
-{% from 'macros/macros.html' import render_event with context %}
+{% from 'macros/macros.html' import render_events with context %}
 {% block content %}
 <div class="content-section">
-<table style="width: 100%">
-  <tr style="border: 0px">
-    <th>Host</th>
-    <th>Theme</th>
-    <th>Location</th>
-    <th>Date</th>
-    <th>Between</th>
-    <th>Slots</th>
-  </tr>
-  {% for event in events %}
-    {{ render_event(event) }}
-  {% endfor %}
-</table>
+  <table style="width: 100%">
+    <tr style="border: 0px">
+      <th>Host</th>
+      <th>Theme</th>
+      <th>Location</th>
+      <th>Date</th>
+      <th>Between</th>
+      <th>Slots</th>
+    </tr>
+    {% for event in events %}
+    <tr>
+      <td>{{ event.host.username }}</td>
+      <td>{{ event.theme }}</td>
+      <td>{{ event.location_name }}</td>
+      <td>{{ event.start_time.strftime('%Y-%b-%d') }}</td>
+      <td>{{ event.start_time.strftime('%H:%M') }} - {{ event.end_time.strftime('%H:%M') }}</td>
+      <td>{{ event.attendants|count }}/{{ event.maximum_attendants }}</td>
+      <td><a href="{{ url_for('events.event_view', event_id=event.id) }}">View</a></td>
+    </tr>
+    {% endfor %}
+  </table>
 </div>
 {% endblock content %}

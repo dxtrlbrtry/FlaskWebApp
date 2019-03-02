@@ -1,0 +1,12 @@
+{% extends 'layout.html' %}
+{% block content %}
+  {% for invite in invites %}
+    <article class="media content-section" id="invite{{ invite.id }}">
+    <div class="media-body">
+        <h4>You have received an invite to event {{ invite.theme }}</h4>
+        <button class="btn btn-sm btn-primary btn-accept-invite" event_id="{{ invite.id }}" onclick="{{ url_for('events.accept_invite', event_id=invite.id) }}">Accept</button>
+        <button class="btn btn-sm btn-secondary btn-refuse-invite" event_id="{{ invite.id }}" onclick="{{ url_for('events.refuse_invite', event_id=invite.id) }}">Refuse</button>
+    </div>
+    </article>
+  {% endfor %}
+{% endblock content %}

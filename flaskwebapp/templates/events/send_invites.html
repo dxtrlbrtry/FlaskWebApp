@@ -1,0 +1,24 @@
+{% extends 'events/event_view.html' %}
+{% block tab %}
+<!-- SEND INVITES -->
+  <h3>Friends</h3>
+  <table>
+    {% for user in current_user.friends %}
+      <tr>
+        <td><p class="mr-2">{{ user.username }}</p></td>
+        <td><img class="rounded-circle" src="{{ url_for('static', filename='profile_pics/' + event.host.image_file) }}" height="25" width="25"></td>
+        {% if user in event.attendants %}
+          <td><small class="text-muted">Attending</small></td>
+        {% elif event.attendants|count >= event.maximum_attendants %}
+          <td><small class="text-muted">Event full</small></td>
+        {% elif user in event.join_requests %}
+          <td><a class="mr-2" href="#">Accept Request</a></td>
+        {% elif user in event.invites_sent %}
+          <td><small class="text-muted">Sent</small></td>
+        {% else %}
+          <td><button class="btn btn-sm btn-secondary btn-send-invite" event_id="{{ event.id }}" onclick="{{ url_for('events.send_invite', event_id=event.id, user_id=user.id) }}">Invite</button></td>
+        {% endif %}
+      </tr>
+      {% endfor %}
+  </table>
+{% endblock tab %}

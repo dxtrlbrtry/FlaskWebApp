@@ -131,26 +131,3 @@
   </div>
 </div>
 {% endmacro %}
-
-<!--RENDER EVENT TEMPLATE-->
-{% macro render_event(event) %}
-  <tr>
-    <td>{{ event.host.username }}</td>
-    <td>{{ event.theme }} </td>
-    <td>{{ event.location_name }}</td>
-    <td>{{ event.start_time.strftime('%Y-%b-%d') }}</td>
-    <td>{{ event.start_time.strftime('%H:%M') }} - {{ event.end_time.strftime('%H:%M') }}</td>
-    <td>{{ event.attendants|count }}/{{ event.maximum_attendants }}</td>
-    <td>
-      {% if current_user in event.attendants %}
-          <a href="{{ url_for('events.event_view', event_id=event.id) }}">View</a>
-      {% elif event.attendants|count >= event.maximum_attendants %}
-          <p style="font-size: 0.7rem" class="text-muted">Event full</p>
-      {% elif current_user in event.join_requests  %}
-          <p style="font-size: 0.7rem" class="text-muted">Request sent</p>
-      {% else %}
-          <a href="{{ url_for('events.send_event_request', event_id=event.id) }}">Join</a>
-      {% endif %}
-    </td>
-  </tr>
-{% endmacro %}

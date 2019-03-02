@@ -1,0 +1,43 @@
+{% extends 'events/event_view.html' %}
+{% block tab %}
+<!-- OVERVIEW -->
+    <div class="tab-pane fade show active" id="v-pills-overview" role="tabpanel" aria-labelledby="v-pills-overview-tab">
+      <div class="container">
+        <table style="width: 100%">
+          <tr>
+            <td>
+              <p>Host:  {{ event.host.username }}
+              <img class="rounded-circle" src="{{ url_for('static', filename='profile_pics/' + event.host.image_file) }}" height="25", width="25">
+              <small class="text-muted">email: {{ event.host.email }}</small></p>
+            </td>
+          </tr>
+          <tr>
+            <td>Theme:  {{ event.theme }}</td>
+          </tr>
+          <tr>
+            <td>Location:  {{ event.location_name }}</td>
+          </tr>
+          <tr>
+            <td>Start date: {{ event.start_time.strftime('%Y-%b-%d') }}</td>
+          </tr>
+          <tr>
+            <td>Between:  {{ event.start_time.strftime('%H:%M') }} - {{ event.end_time.strftime('%H:%M') }}</td>
+          </tr>
+          <tr>
+            <td>Slots:  {{ event.attendants|count }}/{{ event.maximum_attendants }}</td>
+          </tr>
+        </table>
+        {% if current_user != event.host %}
+          {% if current_user in event.attendants %}
+            <a class="btn btn-sm btn-outline-info" event_id="{{ event.id }}" href="{{ url_for('events.leave_event', event_id=event.id) }}">Leave</a>
+          {% elif event.attendants|count >= event.maximum_attendants %}
+            <p class="text-muted">Event full</p>
+          {% elif current_user in event.join_requests %}
+            <small class="text-muted">Sent</small>
+          {% else %}
+            <button class="btn btn-sm btn-outline-info btn-send-request" event_id="{{ event.id }}" onclick="{{ url_for('events.send_event_request', event_id=event.id) }}">Join</button>
+          {% endif %}
+        {% endif %}
+      </div>
+    </div>
+{% endblock tab %}

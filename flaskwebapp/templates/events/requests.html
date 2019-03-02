@@ -1,0 +1,16 @@
+{% extends 'events/event_view.html' %}
+{% block tab %}
+<!-- REQUESTS -->
+<table>
+  {% for request in event.join_requests %}
+    <tr id="request{{ event.id }}">
+      <td><p>{{ request.username }}</p></td>
+      <td><img class="rounded-circle" src="{{ url_for('static', filename='profile_pics/' + event.host.image_file) }}" height="25", width="25"></td>
+      <td>
+        <button class="btn btn-sm btn-outline-info btn-accept-request" event_id="{{ event.id }}" onclick="{{ url_for('events.accept_event_request', event_id=event.id, attendant_id=request.id) }}">Accept</button>
+        <button class="btn btn-sm btn-secondary btn-refuse-request" event_id="{{ event.id }}" onclick="{{ url_for('events.refuse_event_request', event_id=event.id, attendant_id=request.id) }}">Refuse</button>
+      </td>
+    </tr>
+  {% endfor %}
+</table>
+{% endblock tab %}

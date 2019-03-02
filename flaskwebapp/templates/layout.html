@@ -44,8 +44,8 @@
                         <div class="dropdown-menu" aria-labelledby="eventMenuButton">
                             <a class="dropdown-item" href="{{ url_for('events.events_list') }}">Join</a>
                             <a class="dropdown-item" href="{{ url_for('events.create_event') }}">Create</a>
-                            <a class="dropdown-item" href="{{ url_for('events.event_requests') }}">Requests</a>
                             <a class="dropdown-item" href="{{ url_for('events.my_events') }}">My Events</a>
+                            <a class="dropdown-item" href="{{ url_for('events.event_invites') }}">Invites</a>
                         </div>
                     </div>
                     <a class="nav-item nav-link" href="{{ url_for('users.requests') }}">Friend Requests ({{
@@ -65,7 +65,7 @@
 <main role="main">
     <div class="row">
         <div class="col-md-2"></div>
-        <div class="col-md-7">
+        <div class="col-md-7 main-content">
             {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
             {% for category, message in messages %}
@@ -75,8 +75,13 @@
             {% endfor %}
             {% endif %}
             {% endwith %}
+
             {% block content %}
+
+
+
             {% endblock content %}
+
         </div>
         <div class="col-md-3">
             <div class="content-section right-panel">
