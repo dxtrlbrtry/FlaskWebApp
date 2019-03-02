@@ -2,6 +2,7 @@
 {% block tab %}
 <!-- SEND INVITES -->
   <h3>Friends</h3>
+{% if current_user.friends %}
   <table>
     {% for user in current_user.friends %}
       <tr>
@@ -12,7 +13,7 @@
         {% elif event.attendants|count >= event.maximum_attendants %}
           <td><small class="text-muted">Event full</small></td>
         {% elif user in event.join_requests %}
-          <td><a class="mr-2" href="#">Accept Request</a></td>
+          <td><small class="text-muted mr-2" >Accept request from inbox</small></td>
         {% elif user in event.invites_sent %}
           <td><small class="text-muted">Sent</small></td>
         {% else %}
@@ -21,4 +22,7 @@
       </tr>
       {% endfor %}
   </table>
+{% else %}
+<p>You have no friends in your friendlist</p>
+{% endif %}
 {% endblock tab %}

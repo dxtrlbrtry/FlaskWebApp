@@ -1,16 +1,23 @@
 {% extends 'layout.html' %}
 {% block content %}
-{% for request in requests %}
-<article class="media content-section">
-  <div class="media-body">
-    <h2>You have received a friend request from {{ request.username }}</h2>
-    <form method="POST" action="{{ url_for('users.accept_request', username=request.username) }}">
-      <input type="submit" value="Accept">
-    </form>
-    <form method="POST" action="{{ url_for('users.refuse_request', username=request.username) }}">
-      <input type="submit" value="Deny">
-    </form>
-  </div>
-</article>
-{% endfor %}
+<div class="content-section">
+  <h3>Friend requests</h3>
+  {% if requests.count() > 0 %}
+  {% for request in requests %}
+  <article class="media content-section">
+    <div class="media-body">
+      <h2>You have received a friend request from {{ request.username }}</h2>
+      <form method="POST" action="{{ url_for('users.accept_request', username=request.username) }}">
+        <input type="submit" value="Accept">
+      </form>
+      <form method="POST" action="{{ url_for('users.refuse_request', username=request.username) }}">
+        <input type="submit" value="Deny">
+      </form>
+    </div>
+  </article>
+  {% endfor %}
+  {% else %}
+  <p>You have no pending friend requests</p>
+  {% endif%}
+</div>
 {% endblock content %}

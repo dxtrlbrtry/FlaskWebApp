@@ -1,18 +1,18 @@
 {% extends 'layout.html' %}
 {% block content %}
 <div class="nav nav-tabs" id="v-pills-tab" role="tablist">
-  <a class="nav-link" id="overview" href="{{ url_for('events.event_view', event_id=event.id, view='overview') }}" role="tab"
+  <a class="nav-link event-tab article-title" id="overview" href="{{ url_for('events.event_view', event_id=event.id, view='overview') }}" role="tab"
      aria-controls="v-pills-overview" aria-selected="true">Overview</a>
-  <a class="nav-link" id="attendants" href="{{ url_for('events.event_view', event_id=event.id, view='attendants') }}" role="tab"
+  <a class="nav-link event-tab article-title" id="attendants" href="{{ url_for('events.event_view', event_id=event.id, view='attendants') }}" role="tab"
      aria-controls="v-pills-profile" aria-selected="false">Attendants</a>
   {% if current_user == event.host %}
-  <a class="nav-link" id="requests"href="{{ url_for('events.event_view', event_id=event.id, view='requests') }}" role="tab"
+  <a class="nav-link event-tab article-title" id="requests"href="{{ url_for('events.event_view', event_id=event.id, view='requests') }}" role="tab"
      aria-controls="v-pills-home" aria-selected="false">Requests</a>
-  <a class="nav-link" id="send_invites" href="{{ url_for('events.event_view', event_id=event.id, view='send_invites') }}" role="tab"
+  <a class="nav-link event-tab article-title" id="send_invites" href="{{ url_for('events.event_view', event_id=event.id, view='send_invites') }}" role="tab"
      aria-controls="v-pills-messages" aria-selected="false">Send Invites</a>
   {% endif %}
   {% if current_user in event.attendants %}
-  <a class="nav-link" id="chat" href="{{ url_for('events.event_view', event_id=event.id, view='chat') }}" role="tab"
+  <a class="nav-link event-tab article-title" id="chat" href="{{ url_for('events.event_view', event_id=event.id, view='chat') }}" role="tab"
      aria-controls="v-pills-settings" aria-selected="false">Chat</a>
   {% endif %}
 </div>

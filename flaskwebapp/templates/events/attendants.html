@@ -9,8 +9,10 @@
                height="25" width="25"></td>
       <td>
         {% if current_user == event.host %}
+        {% if attendant != event.host %}
         <a class="btn btn-sm btn-outline-info btn-remove-attendant" attendant_id="{{ attendant.id }}"
            onclick="{{ url_for('events.remove_attendant', event_id=event.id, attendant_id=attendant.id) }}">X</a>
+        {% endif %}
         {% endif %}
       </td>
     </tr>

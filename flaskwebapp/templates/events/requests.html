@@ -1,6 +1,7 @@
 {% extends 'events/event_view.html' %}
 {% block tab %}
 <!-- REQUESTS -->
+{% if event.join_requests %}
 <table>
   {% for request in event.join_requests %}
     <tr id="request{{ event.id }}">
@@ -13,4 +14,7 @@
     </tr>
   {% endfor %}
 </table>
+{% else %}
+<p>You have no pending requests</p>
+{% endif %}
 {% endblock tab %}

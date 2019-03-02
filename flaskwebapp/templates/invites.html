@@ -1,5 +1,8 @@
 {% extends 'layout.html' %}
 {% block content %}
+<div class="content-section">
+  <h3>Invites</h3>
+{% if invites %}
   {% for invite in invites %}
     <article class="media content-section" id="invite{{ invite.id }}">
     <div class="media-body">
@@ -9,4 +12,8 @@
     </div>
     </article>
   {% endfor %}
+{% else %}
+  <p>You have no pending invites</p>
+</div>
+{% endif %}
 {% endblock content %}
